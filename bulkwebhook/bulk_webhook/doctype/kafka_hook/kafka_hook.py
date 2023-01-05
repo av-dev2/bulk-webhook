@@ -7,9 +7,11 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils.jinja import validate_template
-from frappe.utils.safe_exec import get_safe_globals
 from bulkwebhook.bulk_webhook.doctype.kafka_settings.kafka_utlis import send_kafka
 from bulkwebhook.bulk_webhook.doctype.bulk_webhook.bulk_webhook import log_request
+from frappe.integrations.doctype.webhook.webhook import get_context as get_webhook_context
+
+WEBHOOK_CONTEXT = get_webhook_context(doc=None)
 
 
 class KafkaHook(Document):
@@ -42,16 +44,13 @@ class KafkaHook(Document):
         temp_doc = frappe.new_doc(self.webhook_doctype)
         if self.condition:
             try:
-                frappe.safe_eval(self.condition, eval_locals=get_context(temp_doc))
+                frappe.safe_eval(self.condition, eval_locals={
+                                 **WEBHOOK_CONTEXT, "doc": temp_doc})
             except Exception as e:
                 frappe.throw(_(e))
 
     def validate_request_body(self):
         validate_template(self.webhook_json)
-
-
-def get_context(doc):
-    return {"doc": doc, "utils": get_safe_globals().get("frappe").get("utils")}
 
 
 def enqueue_webhook(doc, kafka_hook):
@@ -79,7 +78,8 @@ def enqueue_webhook(doc, kafka_hook):
 def get_webhook_data(doc, kafka_hook):
     data = {}
     doc = doc.as_dict(convert_dates_to_str=True)
-    data = frappe.render_template(kafka_hook.webhook_json, get_context(doc))
+    data = frappe.render_template(kafka_hook.webhook_json, context={
+                                  **WEBHOOK_CONTEXT, "doc": doc})
     data = json.loads(data)
     return data
 
@@ -104,7 +104,8 @@ def run_webhooks(doc, method):
             # query webhooks
             webhooks_list = frappe.get_all(
                 "Kafka Hook",
-                fields=["name", "`condition`", "webhook_docevent", "webhook_doctype"],
+                fields=["name", "`condition`",
+                        "webhook_docevent", "webhook_doctype"],
                 filters={"enabled": True},
             )
             # make webhooks map for cache
@@ -138,7 +139,8 @@ def run_webhooks(doc, method):
                 webhook.name
             )
 
-    event_list = ["on_update", "after_insert", "on_submit", "on_cancel", "on_trash"]
+    event_list = ["on_update", "after_insert",
+                  "on_submit", "on_cancel", "on_trash"]
 
     if not doc.flags.in_insert:
         # value change is not applicable in insert
@@ -152,7 +154,7 @@ def run_webhooks(doc, method):
         event = method if method in event_list else None
         if not webhook.condition:
             trigger_webhook = True
-        elif frappe.safe_eval(webhook.condition, eval_locals=get_context(doc)):
+        elif frappe.safe_eval(webhook.condition, eval_locals={**WEBHOOK_CONTEXT, "doc": doc}):
             trigger_webhook = True
 
         if trigger_webhook and event and webhook.webhook_docevent == event:
