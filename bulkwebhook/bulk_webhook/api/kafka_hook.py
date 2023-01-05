@@ -1,7 +1,7 @@
 # Copyright (c) 2022, Aakvatech and contributors
 # For license information, please see license.txt
 
-import frappe
+import frappe, json
 from frappe import _
 from frappe.utils.background_jobs import enqueue
 
@@ -26,7 +26,7 @@ def resend_single_kafkahook(doctype, doc_name, kafkahook_name=None):
         )
     resend_kafkahook(kafkahook_name, doctype, [doc_name])
 
-
+@frappe.whitelist()
 def resend_kafkahook(kafkahook_name, doctype_name, doc_list):
     """
     API Path: <URL>://bulkwebhook.bulk_webhook.api.kafka_hook.resend_kafkahook
@@ -37,6 +37,8 @@ def resend_kafkahook(kafkahook_name, doctype_name, doc_list):
     kafkahook = {}
     kafkahook["name"] = kafkahook_name
     from bulkwebhook.bulk_webhook.doctype.kafka_hook.kafka_hook import enqueue_webhook
+    if isinstance(doc_list, str):
+        doc_list = json.loads(doc_list)
 
     for doc_name in doc_list:
         try:
