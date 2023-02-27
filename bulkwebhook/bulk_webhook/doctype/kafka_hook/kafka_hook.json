@@ -19,7 +19,10 @@
   "sb_webhook",
   "kafka_settings",
   "kafka_topic",
+  "column_break_14",
+  "process_data",
   "sb_webhook_data",
+  "webhook_method",
   "webhook_json"
  ],
  "fields": [
@@ -91,9 +94,11 @@
    "label": "Webhook Data"
   },
   {
+   "depends_on": "eval: doc.process_data == \"JSON\"",
    "fieldname": "webhook_json",
    "fieldtype": "Code",
-   "label": "JSON Request Body"
+   "label": "JSON Request Body",
+   "mandatory_depends_on": "eval: doc.process_data == \"JSON\""
   },
   {
    "fieldname": "kafka_settings",
@@ -107,10 +112,30 @@
    "fieldtype": "Data",
    "label": "Kafka Topic",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "JSON",
+   "description": "Processing the data before send it to Kafka",
+   "fieldname": "process_data",
+   "fieldtype": "Select",
+   "label": "Process Data As",
+   "options": "JSON\nMethod",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.process_data == \"Method\"",
+   "fieldname": "webhook_method",
+   "fieldtype": "Data",
+   "label": "Method",
+   "mandatory_depends_on": "eval: doc.process_data == \"Method\""
   }
  ],
  "links": [],
- "modified": "2022-03-28 01:02:35.098416",
+ "modified": "2023-01-11 11:26:37.510442",
  "modified_by": "Administrator",
  "module": "Bulk Webhook",
  "name": "Kafka Hook",
