@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestProtoBufFile(unittest.TestCase):
+class TestKafkaRequestLog(unittest.TestCase):
 	pass

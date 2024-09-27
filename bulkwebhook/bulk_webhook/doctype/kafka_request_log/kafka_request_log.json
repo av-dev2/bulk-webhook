@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-04 14:27:05.319788",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ref_doctype",
+  "ref_docname",
+  "doc_modified",
+  "column_break_clano",
+  "status",
+  "no_of_document",
+  "log_creation"
+ ],
+ "fields": [
+  {
+   "fieldname": "ref_doctype",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Ref Doctype"
+  },
+  {
+   "fieldname": "ref_docname",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Ref Docname"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status"
+  },
+  {
+   "fieldname": "doc_modified",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Doc Modified"
+  },
+  {
+   "fieldname": "log_creation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Log Creation"
+  },
+  {
+   "fieldname": "no_of_document",
+   "fieldtype": "Data",
+   "label": "No of Document"
+  },
+  {
+   "fieldname": "column_break_clano",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-05 08:24:53.228054",
+ "modified_by": "Administrator",
+ "module": "Bulk Webhook",
+ "name": "Kafka Request Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

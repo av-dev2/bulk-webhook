@@ -11,6 +11,7 @@ from frappe.utils.jinja import validate_template
 from bulkwebhook.bulk_webhook.doctype.kafka_settings.kafka_utlis import send_kafka
 from bulkwebhook.bulk_webhook.doctype.bulk_webhook.bulk_webhook import log_request
 
+from bulkwebhook.bulk_webhook.doctype.kafka_settings.confluent_kafka_utils import run_kafka_hook_for_protobuf
 
 def get_safe_frappe_utils():
     from frappe.utils.safe_exec import add_data_utils
@@ -71,6 +72,10 @@ def run_kafka_hook(
 ):
     hook: KafkaHook = frappe.get_cached_doc("Kafka Hook", kafka_hook_name)
     is_from_request = bool(frappe.request)
+    
+    if hook.process_data == "Method" and hook.webhook_method:
+        run_kafka_hook_for_protobuf(hook, doctype, doc, doc_list)
+        return
 
     if doc:
         _run_kafka_hook(hook, doc)
@@ -92,26 +97,23 @@ def run_kafka_hook(
 
 def _run_kafka_hook(hook, doc):
     data = get_webhook_data(doc, hook)
-    key = None
-    if hook.process_data == "Method" and hook.webhook_method:
-        key = data.id
-
+    
     r = None
     try:
         r = send_kafka(
             hook.kafka_settings,
             hook.kafka_topic,
-            key,
-            data,
+            None,
+            data
         )
-        log_request(hook.kafka_topic, hook.kafka_settings, data, str(r))
+        log_request(hook.kafka_topic, hook.kafka_settings, data.get("data"), str(r))
 
     except Exception as e:
-        frappe.log_error(str(e), frappe.get_traceback())
+        frappe.log_error(frappe.get_traceback(), str(e))
         log_request(
             "Error: " + hook.kafka_topic,
             hook.kafka_settings,
-            data,
+            data.get("data"),
             r,
         )
 
@@ -156,7 +158,9 @@ def run_webhooks(doc: Document, method: str):
     ):
         return
 
-    event_list = {"on_update", "after_insert", "on_submit", "on_cancel", "on_trash"}
+    event_list = {
+        "on_update", "after_insert", "on_submit", "on_cancel", "on_trash"
+    }
 
     # value change is not applicable in insert
     if not doc.flags.in_insert:

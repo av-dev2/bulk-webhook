@@ -149,7 +149,7 @@ class BulkWebhook(Document):
 @frappe.whitelist()
 def send_now(name):
     """Send Auto Email report now"""
-    webhook = frappe.get_doc("Bulk Webhook", name)
+    webhook = frappe.get_cached_doc("Bulk Webhook", name)
     webhook.check_permission()
     webhook.send()
 
@@ -162,7 +162,7 @@ def get_context(data):
 def enqueue_bulk_webhook(
     bulk_webhook_name, method_parameters=None, report_filters=None
 ):
-    webhook = frappe.get_doc("Bulk Webhook", bulk_webhook_name)
+    webhook = frappe.get_cached_doc("Bulk Webhook", bulk_webhook_name)
     headers = get_webhook_headers(webhook)
     data_list = get_webhook_data(webhook, method_parameters, report_filters)
     if not data_list or len(data_list) == 0:
@@ -170,7 +170,7 @@ def enqueue_bulk_webhook(
     url = webhook.request_url
 
     if not url:
-        url = frappe.get_value("Bulk Webhook Settings", "Bulk Webhook Settings", "url")
+        url = frappe.get_cached_value("Bulk Webhook Settings", "Bulk Webhook Settings", "url")
     if webhook.request_type == "API":
         for data_row in data_list:
             for i in range(3):

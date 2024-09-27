@@ -11,7 +11,11 @@
   "bootstrap_servers",
   "client_id",
   "api_key",
-  "api_secret"
+  "api_secret",
+  "ksc_sec",
+  "schema_regestry_url",
+  "username",
+  "password"
  ],
  "fields": [
   {
@@ -45,11 +49,31 @@
    "fieldtype": "Password",
    "label": "API Secret",
    "reqd": 1
+  },
+  {
+   "fieldname": "ksc_sec",
+   "fieldtype": "Section Break",
+   "label": "Schema Registry Configurations"
+  },
+  {
+   "fieldname": "schema_regestry_url",
+   "fieldtype": "Data",
+   "label": "Schema Regestry Url"
+  },
+  {
+   "fieldname": "username",
+   "fieldtype": "Data",
+   "label": "Username"
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-03-25 00:12:34.485031",
+ "modified": "2023-03-16 14:35:09.517429",
  "modified_by": "Administrator",
  "module": "Bulk Webhook",
  "name": "Kafka Settings",
