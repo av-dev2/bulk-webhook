@@ -35,8 +35,8 @@ def get_confluent_kafka_client(settings_doc):
     conf = {
         "bootstrap.servers": settings_doc.bootstrap_servers,
         "client.id": settings_doc.client_id,
-        "security.protocol": "SASL_SSL",
-        "sasl.mechanism": "PLAIN",
+        "security.protocol": settings_doc.security_protocol,
+        "sasl.mechanism": settings_doc.sasl_mechanism,
         "sasl.username": settings_doc.get_password("api_key"),
         "sasl.password": settings_doc.get_password("api_secret"),
     }

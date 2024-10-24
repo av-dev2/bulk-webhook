@@ -12,6 +12,9 @@
   "client_id",
   "api_key",
   "api_secret",
+  "column_break_9vzjb",
+  "security_protocol",
+  "sasl_mechanism",
   "ksc_sec",
   "schema_regestry_url",
   "username",
@@ -69,11 +72,29 @@
    "fieldname": "password",
    "fieldtype": "Password",
    "label": "Password"
+  },
+  {
+   "fieldname": "column_break_9vzjb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "security_protocol",
+   "fieldtype": "Select",
+   "label": "Security Protocol",
+   "options": "\nSSL\nSASL_SSL\nPLAINTEXT\nSASL_PLAINTEXT",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sasl_mechanism",
+   "fieldtype": "Select",
+   "label": "SASL Mechanism",
+   "options": "\nPLAIN\nGSSAPI\nSCRAM-SHA-256\nSCRAM-SHA-512\nOAUTHBEARER",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-16 14:35:09.517429",
+ "modified": "2024-10-24 07:29:40.729186",
  "modified_by": "Administrator",
  "module": "Bulk Webhook",
  "name": "Kafka Settings",
