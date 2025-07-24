@@ -1,6 +1,7 @@
 # frappe -- https://github.com/frappe/frappe is installed via 'bench init'
 httpx
 attrs
+authlib
 protobuf==3.20.3
 confluent-kafka==2.3.0
 kafka-python
